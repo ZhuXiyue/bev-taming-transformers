@@ -97,7 +97,7 @@ def build_bev_dataset_oritest(cfg_path):
 
 
 if __name__ == "__main__":
-    cfg_path = './dataconfig'
+    cfg_path = './dataconfig.py'
     data_loader = build_bev_dataset_oritrain(cfg_path)
 
     for i, data_batch in enumerate(data_loader):
