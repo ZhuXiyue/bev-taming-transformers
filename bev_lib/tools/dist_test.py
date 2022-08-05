@@ -36,6 +36,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 def compute_IOU_each_laryer(pred,gt,thrs = (0.3, 0.4, 0.5, 0.5, 0.7, 0.6, 0.4, 0.3, 0.9)):
     # shape of pred,gt: (layers, w, h) 
+    # return I and U , shape (layers,2)
     IOUs = []
     for i in range(len(pred)):
         cur_pred = pred[i]
@@ -158,83 +159,16 @@ def to_map(detects,maps):
     return np.concatenate((de_map,maps),axis=0)
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(description="Train a detector")
-    parser.add_argument("config", help="train config file path")
-    parser.add_argument("--work_dir", required=True, help="the dir to save logs and models")
-    parser.add_argument(
-        "--checkpoint", help="the dir to checkpoint which the model read from"
-    )
-    parser.add_argument(
-        "--txt_result",
-        type=bool,
-        default=False,
-        help="whether to save results to standard KITTI format of txt type",
-    )
-    parser.add_argument(
-        "--gpus",
-        type=int,
-        default=1,
-        help="number of gpus to use " "(only applicable to non-distributed training)",
-    )
-    parser.add_argument(
-        "--launcher",
-        choices=["none", "pytorch", "slurm", "mpi"],
-        default="none",
-        help="job launcher",
-    )
-    parser.add_argument("--speed_test", action="store_true")
-    parser.add_argument("--local_rank", type=int, default=0)
-    parser.add_argument("--testset", action="store_true")
-
-    args = parser.parse_args()
-    if "LOCAL_RANK" not in os.environ:
-        os.environ["LOCAL_RANK"] = str(args.local_rank)
-
-    return args
 
 
 def main():
 
-    # torch.manual_seed(0)
-    # torch.backends.cudnn.deterministic = True
-    # torch.backends.cudnn.benchmark = False
-    # np.random.seed(0)
-
-    args = parse_args()
-
-    cfg = Config.fromfile(args.config)
-    cfg.local_rank = args.local_rank
+    cfg = Config.fromfile("")
 
     # update configs according to CLI args
-    if args.work_dir is not None:
-        cfg.work_dir = args.work_dir
 
-    distributed = False
-    if "WORLD_SIZE" in os.environ:
-        distributed = int(os.environ["WORLD_SIZE"]) > 1
-
-    if distributed:
-        torch.cuda.set_device(args.local_rank)
-        torch.distributed.init_process_group(backend="nccl", init_method="env://")
-
-        cfg.gpus = torch.distributed.get_world_size()
-    else:
-        cfg.gpus = args.gpus
-
-    # init logger before other steps
-    logger = get_root_logger(cfg.log_level)
-    logger.info("Distributed testing: {}".format(distributed))
-    logger.info(f"torch.backends.cudnn.benchmark: {torch.backends.cudnn.benchmark}")
-
-    model = build_detector(cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
-
-    if args.testset:
-        print("Use Test Set")
-        dataset = build_dataset(cfg.data.test)
-    else:
-        print("Use Val Set")
-        dataset = build_dataset(cfg.data.val)
+   
+    dataset = build_dataset(cfg.data.val)
 
     data_loader = DataLoader(
         dataset,
@@ -245,143 +179,31 @@ def main():
         collate_fn=collate_kitti,
         pin_memory=False,
     )
-    # build_dataloader(
-    #     dataset,
-    #     batch_size=1,#cfg.data.samples_per_gpu if not args.speed_test else 1,
-    #     workers_per_gpu=1, #cfg.data.workers_per_gpu,
-    #     dist=distributed,
-    #     shuffle=False,
-    # )
+   
 
-    checkpoint = load_checkpoint(model, args.checkpoint, map_location="cpu")
-
-    # put model on gpus
-    if distributed:
-        model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)#apex.parallel.convert_syncbn_model(model)
-        model = DistributedDataParallel(
-            model.cuda(cfg.local_rank),
-            device_ids=[cfg.local_rank],
-            output_device=cfg.local_rank,
-            # broadcast_buffers=False,
-            find_unused_parameters=True,
-        )
-    else:
-        # model = fuse_bn_recursively(model)
-        model = model.cuda()
-
-    model.eval()
-    mode = "val"
-
-    logger.info(f"work dir: {args.work_dir}")
-    if cfg.local_rank == 0:
-        prog_bar = torchie.ProgressBar(len(data_loader.dataset) // cfg.gpus)
-
-    detections = {}
-    seg_dects = []
-    # gt_annos = []
     cpu_device = torch.device("cpu")
 
-    start = time.time()
-
-    start = int(len(dataset) / 3)
-    end = int(len(dataset) * 2 /3)
-
-    time_start = 0 
-    time_end = 0 
     IOUs = [] # batches * layers * 2
     for i, data_batch in enumerate(data_loader):
-        # print(data_batch)
+        
         temp = data_batch['bin_map']
         data_batch['bin_map'] = torch.tensor(temp[:,:,:,::-1].copy())
         del temp
-        # print(data_batch)
+
+        print(data_batch.keys())
         info = dataset._nusc_infos[i]
         # print(info)
         cur_annos = convert_box(info)
-        # print("!!!!!!",i,)
-        # print(cur_annos)
-        # print(len(data_batch))
-        # gt_annos.append((cur_annos,data_batch['bin_map'][0]))
-
-        if i == start:
-            torch.cuda.synchronize()
-            time_start = time.time()
-
-        if i == end:
-            torch.cuda.synchronize()
-            time_end = time.time()
-
-        # for quick test, will have error in eval :
-        # if i > 400:
-        #      break
-
-        with torch.no_grad():
-            outputs,seg_outputs = batch_processor(
-                model, data_batch, train_mode=False, local_rank=args.local_rank,
-            )
-        # cur_detections = []
-        for j in range(len(outputs)):
-            output = outputs[j]
-            seg_out = seg_outputs[j]
-            
-            token = output["metadata"]["token"]
-            for k, v in output.items():
-                if k not in [
-                    "metadata",
-                ]:
-                    output[k] = v.to(cpu_device)
-            detections.update(
-                {token: output,}
-            )
-            # cur_detections.append(output)
-            # seg_dects.append(seg_out)
-            
-            if args.local_rank == 0:
-                prog_bar.update()
         
+
         gt_map = to_map(cur_annos,data_batch['bin_map'][0].cpu().numpy())
-        pred_map = to_map(outputs[0],seg_outputs[0].cpu().numpy())
+        # pred_map = to_map(outputs[0],seg_outputs[0].cpu().numpy())
         # cal_iou(gt_map,pred_map)
-        print(np.shape(gt_map),np.shape(pred_map))
-        iou = compute_IOU_each_laryer(pred_map,gt_map) # layers * 2
-        IOUs.append(iou)
-        if i < 200:
-            vis_layer(gt_map,'./vis/gt_'+str(i))
-            vis_layer(pred_map,'./vis/pre_'+str(i))
+        print(np.shape(gt_map))
 
-    IOUs = np.array(IOUs)
-    print("============IOU scores==============")
-    for i in range(9):
-        cur_iou = np.sum(IOUs[:,i,0])/np.sum(IOUs[:,i,1])
-        print(cur_iou)
+        # if i < 200:
+        #     vis_layer(gt_map,'./vis/gt_'+str(i))
 
-    synchronize()
-
-    all_predictions = all_gather(detections)
-    
-    print("\n Total time per frame: ", (time_end -  time_start) / (end - start))
-
-    if args.local_rank != 0:
-        return
-
-    predictions = {}
-    for p in all_predictions:
-        predictions.update(p)
-
-    if not os.path.exists(args.work_dir):
-        os.makedirs(args.work_dir)
-
-    # save_pred(predictions, args.work_dir)
-    # print("!!! for debug !!!")
-    # print(predictions)
-    result_dict, _ = dataset.evaluation(copy.deepcopy(predictions), output_dir=args.work_dir, testset=args.testset)
-
-    if result_dict is not None:
-        for k, v in result_dict["results"].items():
-            print(f"Evaluation {k}: {v}")
-
-    if args.txt_result:
-        assert False, "No longer support kitti"
 
 if __name__ == "__main__":
     main()
