@@ -1,0 +1,140 @@
+no apex
+no apex
+no apex
+No TensorflowNo TensorflowNo Tensorflow
+
+
+Deformable Convolution not built!Deformable Convolution not built!
+
+Deformable Convolution not built!
+no apex
+No Tensorflow
+Deformable Convolution not built!
+No APEX!No APEX!
+
+No APEX!
+No APEX!
+Use HM Bias:  -2.19
+Use HM Bias:  -2.19
+Use HM Bias:  -2.19
+Use HM Bias:  -2.19
+======
+Loading NuScenes tables for version v1.0-trainval...
+======
+Loading NuScenes tables for version v1.0-trainval...
+======
+Loading NuScenes tables for version v1.0-trainval...
+======
+Loading NuScenes tables for version v1.0-trainval...
+23 category,
+8 attribute,
+4 visibility,
+64386 instance,
+12 sensor,
+10200 calibrated_sensor,
+2631083 ego_pose,
+68 log,
+850 scene,
+34149 sample,
+2631083 sample_data,
+1166187 sample_annotation,
+4 map,
+Done loading in 36.828 seconds.
+======
+Reverse indexing ...
+23 category,
+8 attribute,
+4 visibility,
+64386 instance,
+12 sensor,
+10200 calibrated_sensor,
+2631083 ego_pose,
+68 log,
+850 scene,
+34149 sample,
+2631083 sample_data,
+1166187 sample_annotation,
+4 map,
+Done loading in 37.128 seconds.
+======
+Reverse indexing ...
+23 category,
+8 attribute,
+4 visibility,
+64386 instance,
+12 sensor,
+10200 calibrated_sensor,
+2631083 ego_pose,
+68 log,
+850 scene,
+34149 sample,
+2631083 sample_data,
+1166187 sample_annotation,
+4 map,
+Done loading in 42.338 seconds.
+======
+Reverse indexing ...
+Done reverse indexing in 7.4 seconds.
+======
+Done reverse indexing in 8.2 seconds.
+======
+23 category,
+8 attribute,
+4 visibility,
+64386 instance,
+12 sensor,
+10200 calibrated_sensor,
+2631083 ego_pose,
+68 log,
+850 scene,
+34149 sample,
+2631083 sample_data,
+1166187 sample_annotation,
+4 map,
+Done loading in 44.969 seconds.
+======
+Reverse indexing ...
+1010
+
+ini data loader done
+ini data loader done
+after build data set
+after build data set
+before train detect
+before train detect
+total_steps: 308960total_steps: 308960
+
+convert model done
+convert model done
+built opti
+3
+built opti
+0
+Done reverse indexing in 7.8 seconds.
+======
+Done reverse indexing in 8.7 seconds.
+======
+10
+ini data loader done
+after build data set
+before train detect
+total_steps: 308960
+convert model done
+built opti
+1
+10
+ini data loader done
+after build data set
+before train detect
+total_steps: 308960
+convert model done
+built opti
+2
+on gpu
+on gpu
+on gpu
+on gpu
+before print model
+before print model
+before print model
+before print model
