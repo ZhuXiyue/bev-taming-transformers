@@ -14,33 +14,6 @@ source ~/.bashrc
 export PATH="/usr/local/cuda/11.1/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/cuda/11.1/lib64:$LD_LIBRARY_PATH"
 conda activate center2
-export PYTHONPATH=/projects/perception/personals/xiyue/CenterPoint_cuda11/
+export PYTHONPATH=/projects/perception/personals/xiyue/bev-taming-transformers/bev_lib
 
-#export C_INCLUDE_PATH=/usr/local/cuda/11.1/nvml/include:$C_INCLUDE_PATH
-#export C_INCLUDE_PATH=/usr/local/cuda/11.1/include:$C_INCLUDE_PATH
-#export LD_LIBRARY_PATH=/usr/local/cuda/11.1/nvml/libdevice:$LD_LIBRARY_PATH
-#export LD_LIBRARY_PATH=/usr/local/cuda/11.1/nvml/lib64:$LD_LIBRARY_PATH
-#export LD_LIBRARY_PATH=/usr/local/cuda/11.1/jre/lib:$LD_LIBRARY_PATH
-#export LD_LIBRARY_PATH=/usr/local/cuda/11.1/libnvvp:$LD_LIBRARY_PATH
-#export LD_LIBRARY_PATH=/usr/local/cuda/11.1/libnsight:$LD_LIBRARY_PATH
-#export LD_LIBRARY_PATH=/usr/local/cuda/11.1/lib64:$LD_LIBRARY_PATH
-#export PATH=/usr/local/cuda/11.1/bin:$PATH
-#export CUDA_PATH=/usr/local/cuda/11.1
-#export CUDA_HOME=/usr/local/cuda/11.1
-#export LD_LIBRARY_PATH=/usr/local/cuda/11.1/lib64/:$LD_LIBRARY_PATH
-
-#export PATH=/usr/local/cuda/10.0/bin/:$PATH
-#export CUDA_PATH=/usr/local/cuda/10.0/
-#export CUDA_HOME=/usr/local/cuda/10.0/
-#export LD_LIBRARY_PATH=/usr/local/cuda/10.0/lib64:$LD_LIBRARY_PATH
-
-#export CUDNN_INCLUDE_DIR=/usr/local/cuda/10.0/cudnn/usr/include/
-#export CUDNN_LIB_DIR=/usr/local/cuda/10.0/cudnn/usr/lib64/
-#export CUDNN_PATH=/usr/local/cuda/10.0/cudnn/
-#export CUDNN_LIBRARY=/usr/local/cuda/10.0/cudnn/usr/lib64/
-
-# python tools/create_data.py nuscenes_data_prep --root_path=NUSCENES_TRAINVAL_DATASET_ROOT --version="v1.0-trainval" --nsweeps=10
-python -m torch.distributed.launch --nproc_per_node=4 ./tools/train.py nusc_centerpoint_pp_02voxel_two_pfn_10sweep.py
-
-
-#python ./tools/train.py nusc_centerpoint_pp_02voxel_two_pfn_10sweep.py
+python dataset_test.py
