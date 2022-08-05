@@ -138,7 +138,10 @@ def to_map(detects,maps):
     ## merge detection results into map to form binary results for every class
     de_map = np.zeros((2,512,512))
     boxes = _second_det_to_nusc_box(detects)
-
+    # print('detect:',detects)
+    # print('box:',boxes)
+    # print('!!!!!!!!debug!!!!!!!!!',len(boxes))
+    # print(boxes[0])
     for box in boxes:
         # print('before process:',box.poly())
         poly = (box.bottom_corners()[:2,:].T + 51.2) * 5
