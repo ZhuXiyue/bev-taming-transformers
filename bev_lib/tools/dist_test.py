@@ -163,11 +163,8 @@ def to_map(detects,maps):
 
 def main():
 
-    cfg = Config.fromfile("bev_data.py")
+    cfg = Config.fromfile("bev_data.py")  
 
-    # update configs according to CLI args
-
-   
     dataset = build_dataset(cfg.data.val)
 
     data_loader = DataLoader(
