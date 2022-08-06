@@ -1,25 +1,34 @@
-print('start running')
 import argparse
 import copy
 import json
 import os
 import sys
 import cv2
-
-import numpy as np
-import torch
-import yaml
-from det3d import torchie
-from det3d.datasets import build_dataset
-from det3d.torchie import Config
-
-from det3d.torchie.parallel import collate_kitti
-from torch.utils.data import DataLoader
 try:
     import apex
 except:
     print("No APEX!")
+import numpy as np
+import torch
+import yaml
+from det3d import torchie
+from det3d.datasets import build_dataloader, build_dataset
+from det3d.models import build_detector
+from det3d.torchie import Config
+from det3d.torchie.apis import (
+    batch_processor,
+    build_optimizer,
+    get_root_logger,
+    init_dist,
+    set_random_seed,
+    train_detector,
+)
+from det3d.torchie.parallel import collate, collate_kitti
+from torch.utils.data import DataLoader
 
+from det3d.torchie.trainer import get_dist_info, load_checkpoint
+from det3d.torchie.trainer.utils import all_gather, synchronize
+from torch.nn.parallel import DistributedDataParallel
 import pickle 
 import time 
 from tools.demo_utils import Box,_second_det_to_nusc_box
@@ -152,25 +161,31 @@ def to_map(detects,maps):
 
 
 
-if __name__ == "__main__":
-    cfg = Config.fromfile("bev_data.py")  
+def main():
 
+    cfg = Config.fromfile("")
+
+    # update configs according to CLI args
+
+   
     dataset = build_dataset(cfg.data.val)
-    print('ini done')
+
     data_loader = DataLoader(
         dataset,
         batch_size=1,
         sampler=None,
         shuffle=False,
-        num_workers=0,
+        num_workers=1,
         collate_fn=collate_kitti,
         pin_memory=False,
     )
    
-    print('loader_done')
 
+    cpu_device = torch.device("cpu")
+
+    IOUs = [] # batches * layers * 2
     for i, data_batch in enumerate(data_loader):
-        print(i)
+        
         temp = data_batch['bin_map']
         data_batch['bin_map'] = torch.tensor(temp[:,:,:,::-1].copy())
         del temp
@@ -189,3 +204,6 @@ if __name__ == "__main__":
         # if i < 200:
         #     vis_layer(gt_map,'./vis/gt_'+str(i))
 
+
+if __name__ == "__main__":
+    main()
