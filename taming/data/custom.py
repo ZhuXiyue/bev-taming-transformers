@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import torch
 import albumentations
 from torch.utils.data import Dataset
 from det3d.datasets import build_dataloader, build_dataset
@@ -17,9 +18,11 @@ class CustomBase(Dataset):
 
     def __getitem__(self, i):
         example = self.data[i]
+        res_example  = {}
+        res_example['image'] = example['bin_map']
         # print(example.keys())
         # print(np.shape(example['bin_map']))
-        return example['bin_map']
+        return res_example
 
 
 
