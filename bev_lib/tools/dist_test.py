@@ -1,3 +1,4 @@
+print('start running')
 import argparse
 import copy
 import json
@@ -19,7 +20,7 @@ try:
     import apex
 except:
     print("No APEX!")
-    
+
 import pickle 
 import time 
 from tools.demo_utils import Box,_second_det_to_nusc_box
@@ -152,8 +153,11 @@ def to_map(detects,maps):
 
 
 
-def main():
 
+
+    
+
+if __name__ == "__main__":
     cfg = Config.fromfile("bev_data.py")  
 
     dataset = build_dataset(cfg.data.val)
@@ -163,7 +167,7 @@ def main():
         batch_size=1,
         sampler=None,
         shuffle=False,
-        num_workers=1,
+        num_workers=0,
         collate_fn=collate_kitti,
         pin_memory=False,
     )
@@ -190,6 +194,3 @@ def main():
         # if i < 200:
         #     vis_layer(gt_map,'./vis/gt_'+str(i))
 
-
-if __name__ == "__main__":
-    main()
