@@ -15,7 +15,11 @@ from det3d.torchie import Config
 
 from det3d.torchie.parallel import collate_kitti
 from torch.utils.data import DataLoader
-
+try:
+    import apex
+except:
+    print("No APEX!")
+    
 import pickle 
 import time 
 from tools.demo_utils import Box,_second_det_to_nusc_box
@@ -159,7 +163,7 @@ def main():
         batch_size=1,
         sampler=None,
         shuffle=False,
-        num_workers=0,
+        num_workers=1,
         collate_fn=collate_kitti,
         pin_memory=False,
     )
