@@ -39,7 +39,7 @@ class LPIPS(nn.Module):
         return model
 
     def forward(self, input, target):
-        in0_input, in1_input = (self.scaling_layer(input), self.scaling_layer(target))
+        in0_input, in1_input = input, target # (self.scaling_layer(input), self.scaling_layer(target))
         outs0, outs1 = self.net(in0_input), self.net(in1_input)
         feats0, feats1, diffs = {}, {}, {}
         lins = [self.lin0, self.lin1, self.lin2, self.lin3, self.lin4]
