@@ -75,6 +75,7 @@ class VQModel(pl.LightningModule):
 
     def get_input(self, batch, k):
         print(k)
+        print(np.shape(batch))
         x = batch[k]
         if len(x.shape) == 3:
             x = x[..., None]
