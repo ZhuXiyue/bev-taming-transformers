@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 import pytorch_lightning as pl
-
+import numpy as np
 from main import instantiate_from_config
 
 from taming.modules.diffusionmodules.model import Encoder, Decoder
