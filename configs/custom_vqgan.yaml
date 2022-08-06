@@ -29,7 +29,7 @@ data:
   target: main.DataModuleFromConfig
   params:
     batch_size: 5
-    num_workers: 8
+    num_workers: 1
     train:
       target: taming.data.custom.CustomTrain
       params:
