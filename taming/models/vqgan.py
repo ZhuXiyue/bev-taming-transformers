@@ -74,12 +74,12 @@ class VQModel(pl.LightningModule):
         return dec, diff
 
     def get_input(self, batch, k):
-        print(k)
-        print(np.shape(batch))
+        # print(k)
+        # print(np.shape(batch))
         x = batch[k]
         if len(x.shape) == 3:
             x = x[..., None]
-        x = x.permute(0, 3, 1, 2).to(memory_format=torch.contiguous_format)
+        x = x.to(memory_format=torch.contiguous_format)#x.permute(0, 3, 1, 2).to(memory_format=torch.contiguous_format)
         return x.float()
 
     def training_step(self, batch, batch_idx, optimizer_idx):
