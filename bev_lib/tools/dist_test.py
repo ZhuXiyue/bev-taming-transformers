@@ -164,10 +164,6 @@ def to_map(detects,maps):
 def main():
 
     cfg = Config.fromfile("bev_data.py")
-
-    # update configs according to CLI args
-
-   
     dataset = build_dataset(cfg.data.val)
 
     data_loader = DataLoader(
@@ -175,10 +171,14 @@ def main():
         batch_size=1,
         sampler=None,
         shuffle=False,
-        num_workers=0,
+        num_workers=1,
         collate_fn=collate_kitti,
         pin_memory=False,
     )
+    print('loader_done')
+
+    print(len(dataset))
+    print(dataset[10])
    
 
     cpu_device = torch.device("cpu")
