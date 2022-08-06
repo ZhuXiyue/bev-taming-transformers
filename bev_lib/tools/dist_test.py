@@ -175,7 +175,7 @@ def main():
         batch_size=1,
         sampler=None,
         shuffle=False,
-        num_workers=1,
+        num_workers=0,
         collate_fn=collate_kitti,
         pin_memory=False,
     )
