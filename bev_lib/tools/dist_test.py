@@ -153,7 +153,7 @@ def main():
     cfg = Config.fromfile("bev_data.py")  
 
     dataset = build_dataset(cfg.data.val)
-
+    print('ini done')
     data_loader = DataLoader(
         dataset,
         batch_size=1,
@@ -164,12 +164,12 @@ def main():
         pin_memory=False,
     )
    
-
+    print('loader_done')
     cpu_device = torch.device("cpu")
 
     IOUs = [] # batches * layers * 2
     for i, data_batch in enumerate(data_loader):
-        
+        print(i)
         temp = data_batch['bin_map']
         data_batch['bin_map'] = torch.tensor(temp[:,:,:,::-1].copy())
         del temp
