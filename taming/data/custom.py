@@ -17,8 +17,8 @@ class CustomBase(Dataset):
 
     def __getitem__(self, i):
         example = self.data[i]
-        print(example.keys())
-        print(np.shape(example['bin_map']))
+        # print(example.keys())
+        # print(np.shape(example['bin_map']))
         return example['bin_map']
 
 

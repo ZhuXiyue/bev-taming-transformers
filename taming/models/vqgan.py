@@ -74,6 +74,7 @@ class VQModel(pl.LightningModule):
         return dec, diff
 
     def get_input(self, batch, k):
+        print(k)
         x = batch[k]
         if len(x.shape) == 3:
             x = x[..., None]
