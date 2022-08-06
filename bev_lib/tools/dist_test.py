@@ -163,7 +163,7 @@ def to_map(detects,maps):
 
 def main():
 
-    cfg = Config.fromfile("")
+    cfg = Config.fromfile("bev_data.py")
 
     # update configs according to CLI args
 
