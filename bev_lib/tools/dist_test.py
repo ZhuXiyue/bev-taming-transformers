@@ -153,10 +153,6 @@ def to_map(detects,maps):
 
 
 
-
-
-    
-
 if __name__ == "__main__":
     cfg = Config.fromfile("bev_data.py")  
 
