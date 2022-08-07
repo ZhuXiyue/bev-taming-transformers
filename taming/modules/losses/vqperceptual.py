@@ -81,7 +81,7 @@ class VQLPIPSWithDiscriminator(nn.Module):
             rec_loss = rec_loss + self.perceptual_weight * p_loss
         else:
             p_loss = torch.tensor([0.0])
-            print('perceptual loss disabled')
+            # print('perceptual loss disabled')
 
         nll_loss = rec_loss
         #nll_loss = torch.sum(nll_loss) / nll_loss.shape[0]
