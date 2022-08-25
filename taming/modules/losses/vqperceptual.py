@@ -34,7 +34,7 @@ def vanilla_d_loss(logits_real, logits_fake):
 class VQLPIPSWithDiscriminator(nn.Module):
     def __init__(self, disc_start, codebook_weight=1.0, pixelloss_weight=1.0,
                  disc_num_layers=3, disc_in_channels=3, disc_factor=1.0, disc_weight=1.0,
-                 perceptual_weight=1.0, use_actnorm=False, disc_conditional=False,
+                 perceptual_weight=0, use_actnorm=False, disc_conditional=False,
                  disc_ndf=64, disc_loss="hinge"):
         super().__init__()
         assert disc_loss in ["hinge", "vanilla"]
@@ -81,6 +81,7 @@ class VQLPIPSWithDiscriminator(nn.Module):
             rec_loss = rec_loss + self.perceptual_weight * p_loss
         else:
             p_loss = torch.tensor([0.0])
+            # print('perceptual loss disabled')
 
         nll_loss = rec_loss
         #nll_loss = torch.sum(nll_loss) / nll_loss.shape[0]
