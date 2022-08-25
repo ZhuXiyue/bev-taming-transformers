@@ -3,52 +3,56 @@ import numpy as np
 import torch
 import albumentations
 from torch.utils.data import Dataset
-from det3d.datasets import build_dataloader, build_dataset
-from det3d.torchie import Config
+# from det3d.datasets import build_dataloader, build_dataset
+from mmdet3d.datasets import build_dataloader, build_dataset
+# from det3d.torchie import Config
+from torchpack.utils.config import configs
+from mmcv import Config
+
 from taming.data.base import ImagePaths, NumpyPaths, ConcatDatasetWithIndex
 import cv2
-from tools.demo_utils import Box,_second_det_to_nusc_box
+# from tools.demo_utils import Box,_second_det_to_nusc_box
 
-def to_map(detects,maps):
-    ## given detections and map,
-    ## merge detection results into map to form binary results for every class
-    de_map = np.zeros((2,512,512))
-    boxes = _second_det_to_nusc_box(detects)
+# def to_map(detects,maps):
+#     ## given detections and map,
+#     ## merge detection results into map to form binary results for every class
+#     de_map = np.zeros((2,512,512))
+#     boxes = _second_det_to_nusc_box(detects)
 
-    for box in boxes:
-        poly = (box.bottom_corners()[:2,:].T + 51.2) * 5
-        poly = np.round(poly).astype(np.int32)
+#     for box in boxes:
+#         poly = (box.bottom_corners()[:2,:].T + 51.2) * 5
+#         poly = np.round(poly).astype(np.int32)
 
-        if box.label == 0 and box.score > 0.2:  
-            de_map[0] = cv2.fillPoly(de_map[0],[poly],1)
-        elif box.label == 8 and box.score> 0.3:
-            de_map[1] = cv2.fillPoly(de_map[1],[poly],1)
+#         if box.label == 0 and box.score > 0.2:  
+#             de_map[0] = cv2.fillPoly(de_map[0],[poly],1)
+#         elif box.label == 8 and box.score> 0.3:
+#             de_map[1] = cv2.fillPoly(de_map[1],[poly],1)
         
-    # de_map = de_map[:,:,:].copy()
-    return np.concatenate((de_map,maps),axis=0)
+#     # de_map = de_map[:,:,:].copy()
+#     return np.concatenate((de_map,maps),axis=0)
 
-def convert_box(info):
-    boxes =  info["gt_boxes"].astype(np.float32)
-    names = info["gt_names"]
+# def convert_box(info):
+#     boxes =  info["gt_boxes"].astype(np.float32)
+#     names = info["gt_names"]
 
-    assert len(boxes) == len(names)
+#     assert len(boxes) == len(names)
 
-    detection = {}
+#     detection = {}
 
-    detection['box3d_lidar'] = boxes
+#     detection['box3d_lidar'] = boxes
 
-    # dummy value 
-    # 2 is not used value
-    detection['label_preds'] = np.zeros(len(boxes)) + 2
-    for i in range(len(names)):
-        if names[i] == 'car':
-            detection['label_preds'][i] = 0
-        elif names[i] == 'pedestrian':
-            detection['label_preds'][i] = 8
+#     # dummy value 
+#     # 2 is not used value
+#     detection['label_preds'] = np.zeros(len(boxes)) + 2
+#     for i in range(len(names)):
+#         if names[i] == 'car':
+#             detection['label_preds'][i] = 0
+#         elif names[i] == 'pedestrian':
+#             detection['label_preds'][i] = 8
 
-    detection['scores'] = np.ones(len(boxes))
+#     detection['scores'] = np.ones(len(boxes))
 
-    return detection 
+#     return detection 
 
 
 class CustomBase(Dataset):
@@ -83,7 +87,12 @@ class CustomTrain(CustomBase):
     def __init__(self, size, training_images_list_file):
         super().__init__()
 
-        cfg = Config.fromfile("bev_data.py")
+        # cfg = Config.fromfile("bev_data.py")
+        config_name = ''
+        configs.load(args.config, recursive=True)
+        cfg = Config(recursive_eval(configs), filename=args.config)
+        # print(cfg)
+
         dataset = build_dataset(cfg.data.train)
         self.data = dataset
 

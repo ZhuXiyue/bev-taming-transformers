@@ -1,2 +1,0 @@
-2022-07-05 00:24:27,331 - INFO - Start running, host: xiyuez2@ccc0285.campuscluster.illinois.edu, work_dir: /projects/perception/personals/xiyue/CenterPoint_cuda11/work_dirs/nusc_centerpoint_pp_02voxel_two_pfn_10sweep
-2022-07-05 00:24:27,331 - INFO - workflow: [('train', 1)], max: 20 epochs
