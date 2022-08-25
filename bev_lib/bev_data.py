@@ -29,8 +29,9 @@ model = dict(
         num_filters=[64, 64],
         num_input_features=5,
         with_distance=False,
-        voxel_size=(0.2, 0.2, 8),
-        pc_range=(-51.2, -51.2, -5.0, 51.2, 51.2, 3.0),
+        voxel_size=(0.5, 0.5, 8),
+        # pc_range=(-51.2, -51.2, -5.0, 51.2, 51.2, 3.0),
+        pc_range=(-50.0, -50.0, -5.0, 50.0, 50.0, 3.0),
     ),
     backbone=dict(type="PointPillarsScatter", ds_factor=1),
     neck=dict(
@@ -75,9 +76,11 @@ test_cfg = dict(
         nms_iou_threshold=0.2,
     ),
     score_threshold=0.1,
-    pc_range=[-51.2, -51.2],
+    # pc_range=[-51.2, -51.2],
+    pc_range=[-50.0, -50.0],
     out_size_factor=get_downsample_factor(model),
-    voxel_size=[0.2, 0.2]
+    # voxel_size=[0., 0.2]
+    voxel_size=[0.5, 0.5]
 )
 
 # dataset settings
@@ -138,8 +141,10 @@ val_preprocessor = dict(
 )
 
 voxel_generator = dict(
-    range=[-51.2, -51.2, -5.0, 51.2, 51.2, 3.0],
-    voxel_size=[0.2, 0.2, 8],
+    # range=[-51.2, -51.2, -5.0, 51.2, 51.2, 3.0],
+    range=[-50.0, -50.0, -5.0, 50.0, 50.0, 3.0],
+    # voxel_size=[0.2, 0.2, 8],
+    voxel_size=[0.5, 0.5, 8],
     max_points_in_voxel=20,
     max_voxel_num=[30000, 60000],
 )

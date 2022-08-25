@@ -273,6 +273,9 @@ class VectorQuantizer2(nn.Module):
         assert rescale_logits==False, "Only for interface compatible with Gumbel"
         assert return_logits==False, "Only for interface compatible with Gumbel"
         # reshape z -> (batch, height, width, channel) and flatten
+        ##TODO:
+        # reinit for z_q using kmeans
+        
         z = rearrange(z, 'b c h w -> b h w c').contiguous()
         z_flattened = z.view(-1, self.e_dim)
         # distances from z to embeddings e_j (z - e)^2 = z^2 + e^2 - 2 e * z
@@ -285,6 +288,7 @@ class VectorQuantizer2(nn.Module):
         z_q = self.embedding(min_encoding_indices).view(z.shape)
         perplexity = None
         min_encodings = None
+        
 
         # compute loss for embedding
         if not self.legacy:
