@@ -77,8 +77,8 @@ class CustomBase(Dataset):
         # print(np.shape(gt_map))
 
         res_example  = {}
-        res_example['image'] = None
-
+        res_example['image'] = np.array(example['gt_masks_bev'])
+        del example
         return res_example
 
 
