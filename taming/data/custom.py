@@ -78,6 +78,7 @@ class CustomBase(Dataset):
 
         res_example  = {}
         res_example['image'] = np.array(example['gt_masks_bev'])
+        print(np.shape(res_example['image']))
         del example
         return res_example
 

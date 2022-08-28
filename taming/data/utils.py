@@ -126,7 +126,7 @@ def custom_collate(batch):
 
     elem = batch[0]
     elem_type = type(elem)
-    print(elem)
+    # print(elem)
     if isinstance(elem, torch.Tensor):
         out = None
         if torch.utils.data.get_worker_info() is not None:
