@@ -66,8 +66,6 @@ class CustomBase(Dataset):
 
     def __getitem__(self, i):
         example = self.data[i]
-        print(example)
-        print("keys!!",example.keys())        
         # info = self.data._nusc_infos[i]
         # print(info)
         # cur_annos = convert_box(info)
@@ -78,8 +76,8 @@ class CustomBase(Dataset):
         # cal_iou(gt_map,pred_map)
         # print(np.shape(gt_map))
 
-        # res_example  = {}
-        # res_example['image'] = gt_map
+        res_example  = {}
+        res_example['image'] = None
 
         return example
 
@@ -97,7 +95,9 @@ class CustomTrain(CustomBase):
         cfg = Config(recursive_eval(configs), filename=config_name)
         dataset = build_dataset(cfg.data.train)
         self.data = dataset
-
+        example = dataset[0]
+        print(example)
+        print("keys!!",example.keys())    
 
 class CustomTest(CustomBase):
     def __init__(self, size, test_images_list_file):
