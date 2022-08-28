@@ -79,7 +79,7 @@ class CustomBase(Dataset):
         res_example  = {}
         res_example['image'] = None
 
-        return example
+        return res_example
 
 
 
