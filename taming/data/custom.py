@@ -8,6 +8,7 @@ from mmdet3d.datasets import build_dataloader, build_dataset
 # from det3d.torchie import Config
 from torchpack.utils.config import configs
 from mmcv import Config
+from mmdet3d.utils import recursive_eval
 
 from taming.data.base import ImagePaths, NumpyPaths, ConcatDatasetWithIndex
 import cv2
@@ -65,21 +66,22 @@ class CustomBase(Dataset):
 
     def __getitem__(self, i):
         example = self.data[i]
-        
-        info = self.data._nusc_infos[i]
+        print(example)
+        print("keys!!",example.keys())        
+        # info = self.data._nusc_infos[i]
         # print(info)
-        cur_annos = convert_box(info)
+        # cur_annos = convert_box(info)
         
-        gt_map = to_map(cur_annos,example['bin_map'].cpu().numpy())
+        # gt_map = to_map(cur_annos,example['bin_map'].cpu().numpy())
         
         # pred_map = to_map(outputs[0],seg_outputs[0].cpu().numpy())
         # cal_iou(gt_map,pred_map)
-        print(np.shape(gt_map))
+        # print(np.shape(gt_map))
 
-        res_example  = {}
-        res_example['image'] = gt_map
+        # res_example  = {}
+        # res_example['image'] = gt_map
 
-        return res_example
+        return example
 
 
 
@@ -88,11 +90,11 @@ class CustomTrain(CustomBase):
         super().__init__()
 
         # cfg = Config.fromfile("bev_data.py")
-        config_name = ''
-        configs.load(args.config, recursive=True)
-        cfg = Config(recursive_eval(configs), filename=args.config)
+        
         # print(cfg)
-
+        config_name = '/home/xiyuez2/xiyue/bev-taming-transformers/bev_lib/configs/nuscenes/seg/vq_image.yaml'
+        configs.load(config_name, recursive=True)
+        cfg = Config(recursive_eval(configs), filename=config_name)
         dataset = build_dataset(cfg.data.train)
         self.data = dataset
 
@@ -100,7 +102,15 @@ class CustomTrain(CustomBase):
 class CustomTest(CustomBase):
     def __init__(self, size, test_images_list_file):
         super().__init__()
-        cfg = Config.fromfile("bev_data.py")
-        dataset = build_dataset(cfg.data.val)
+        # cfg = Config.fromfile("bev_data.py")
+        config_name = '/home/xiyuez2/xiyue/bev-taming-transformers/bev_lib/configs/nuscenes/seg/vq_image.yaml'
+        configs.load(config_name, recursive=True)
+        cfg = Config(recursive_eval(configs), filename=config_name)
+        dataset = build_dataset(cfg.data.test)
         self.data = dataset
+
+
+        # dataset = build_dataset(cfg.data.val)
+        
+        
 
