@@ -132,8 +132,8 @@ train_pipeline:
   -
     type: LoadBEVSegmentation
     dataset_root: ${dataset_root}
-    xbound: [-50.0, 50.0, 0.5]
-    ybound: [-50.0, 50.0, 0.5]
+    xbound: [-56.0, 56.0, 0.5]
+    ybound: [-56.0, 56.0, 0.5]
     classes: ${map_classes}
   -
     type: RandomFlip3D
