@@ -84,7 +84,7 @@ def main():
     if distributed:
         if args.launcher == "pytorch":
             torch.cuda.set_device(args.local_rank)
-            torch.distributed.init_process_group(backend="gloo", init_method="env://")
+            torch.distributed.init_process_group(backend="nccl", init_method="env://")
             cfg.local_rank = args.local_rank
         elif args.launcher == "slurm":
             proc_id = int(os.environ["SLURM_PROCID"])
@@ -111,7 +111,7 @@ def main():
             os.environ["LOCAL_RANK"] = str(proc_id % num_gpus)
             os.environ["RANK"] = str(proc_id)
 
-            dist.init_process_group(backend="gloo")
+            dist.init_process_group(backend="nccl")
             cfg.local_rank = int(os.environ["LOCAL_RANK"])
 
         cfg.gpus = dist.get_world_size()
