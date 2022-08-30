@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH --job-name="autoencoder_bev"
+#SBATCH --output="slurm_logs/debug.out"
+#SBATCH --error="slurm_logs/debug.err"
+#SBATCH --partition=shenlong
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=2
+#SBATCH --cpus-per-task=4
+#SBATCH --gres=gpu:2
+#SBATCH --mem=32000
+#SBATCH -t 24:00:00
+
+source ~/.bashrc
+module load cuda/.11.1
+
+conda activate center2
+export PYTHONPATH=/projects/perception/personals/xiyue/bev-taming-transformers/bev_lib
+export NCCL_DEBUG=INFO 
+python main.py --base configs/custom_vqgan.yaml -t True --gpus 0,1 --launcher slurm
