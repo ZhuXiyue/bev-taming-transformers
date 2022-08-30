@@ -81,7 +81,7 @@ class CustomBase(Dataset):
         # print(np.shape(res_example['image']))
         # del example
         res_example  = {}
-        res_example['image'] = np.zeros((6,200,200))
+        res_example['image'] = np.zeros((6,256,256))
         return res_example
 
 
