@@ -14,6 +14,6 @@ source ~/.bashrc
 module load cuda/.11.1
 
 conda activate center2
-export PYTHONPATH=/projects/perception/personals/xiyue/bev-taming-transformers/bev_lib
+# export PYTHONPATH=/projects/perception/personals/xiyue/bev-taming-transformers/bev_lib
 export NCCL_DEBUG=INFO 
 python main.py --base configs/custom_vqgan.yaml -t True --gpus 0,1 --launcher slurm
