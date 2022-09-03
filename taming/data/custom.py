@@ -3,12 +3,12 @@ import numpy as np
 import torch
 import albumentations
 from torch.utils.data import Dataset
-# # from det3d.datasets import build_dataloader, build_dataset
-# from mmdet3d.datasets import build_dataloader, build_dataset
-# # from det3d.torchie import Config
-# from torchpack.utils.config import configs
-# from mmcv import Config
-# from mmdet3d.utils import recursive_eval
+# from det3d.datasets import build_dataloader, build_dataset
+from mmdet3d.datasets import build_dataloader, build_dataset
+# from det3d.torchie import Config
+from torchpack.utils.config import configs
+from mmcv import Config
+from mmdet3d.utils import recursive_eval
 
 from taming.data.base import ImagePaths, NumpyPaths, ConcatDatasetWithIndex
 import cv2
@@ -65,23 +65,20 @@ class CustomBase(Dataset):
         return len(self.data)
 
     def __getitem__(self, i):
-        # example = self.data[i]
-        # # info = self.data._nusc_infos[i]
-        # # print(info)
-        # # cur_annos = convert_box(info)
+        example = self.data[i]
+        # info = self.data._nusc_infos[i]
+        # print(info)
+        # cur_annos = convert_box(info)
         
-        # # gt_map = to_map(cur_annos,example['bin_map'].cpu().numpy())
+        # gt_map = to_map(cur_annos,example['bin_map'].cpu().numpy())
         
-        # # pred_map = to_map(outputs[0],seg_outputs[0].cpu().numpy())
-        # # cal_iou(gt_map,pred_map)
-        # # print(np.shape(gt_map))
+        # pred_map = to_map(outputs[0],seg_outputs[0].cpu().numpy())
+        # cal_iou(gt_map,pred_map)
+        # print(np.shape(gt_map))
 
-        # res_example  = {}
-        # res_example['image'] = np.array(example['gt_masks_bev'])
-        # print(np.shape(res_example['image']))
-        # del example
         res_example  = {}
-        res_example['image'] = np.zeros((6,256,256))
+        res_example['image'] = np.array(example['gt_masks_bev'])
+        del example
         return res_example
 
 
@@ -90,34 +87,21 @@ class CustomTrain(CustomBase):
     def __init__(self, size, training_images_list_file):
         super().__init__()
 
-        # cfg = Config.fromfile("bev_data.py")
-        
         # print(cfg)
-        # config_name = '/home/xiyuez2/xiyue/bev-taming-transformers/bev_lib/configs/nuscenes/seg/vq_image.yaml'
-        # configs.load(config_name, recursive=True)
-        # cfg = Config(recursive_eval(configs), filename=config_name)
-        # dataset = build_dataset(cfg.data.train)
-        # self.data = dataset
-        # example = dataset[0]
-        # print(example)
-        # print("keys!!",example.keys())    
+        config_name = 'bev_lib/configs/nuscenes/seg/vq_image.yaml'
+        configs.load(config_name, recursive=True)
+        cfg = Config(recursive_eval(configs), filename=config_name)
+        dataset = build_dataset(cfg.data.train)
+        self.data = dataset
 
-        self.data = None
 class CustomTest(CustomBase):
     def __init__(self, size, test_images_list_file):
         super().__init__()
-        # # cfg = Config.fromfile("bev_data.py")
-        # config_name = '/home/xiyuez2/xiyue/bev-taming-transformers/bev_lib/configs/nuscenes/seg/vq_image.yaml'
-        # configs.load(config_name, recursive=True)
-        # cfg = Config(recursive_eval(configs), filename=config_name)
-        # dataset = build_dataset(cfg.data.test)
-        # self.data = dataset
+        # cfg = Config.fromfile("bev_data.py")
+        config_name = 'bev_lib/configs/nuscenes/seg/vq_image.yaml'
+        configs.load(config_name, recursive=True)
+        cfg = Config(recursive_eval(configs), filename=config_name)
+        dataset = build_dataset(cfg.data.test)
+        self.data = dataset
 
-        self.data = None
-
-
-
-        # dataset = build_dataset(cfg.data.val)
-        
-        
 
