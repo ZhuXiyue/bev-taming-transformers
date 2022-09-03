@@ -310,12 +310,12 @@ class ImageLogger(Callback):
         return False
 
     def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
-        print('on train end, skipping log_img')
+        # print('on train end, skipping log_img')
         return
         self.log_img(pl_module, batch, batch_idx, split="train")
 
     def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
-        print('on val end, skipping log_img')
+        # print('on val end, skipping log_img')
         return
         self.log_img(pl_module, batch, batch_idx, split="val")
 
