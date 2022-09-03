@@ -232,11 +232,6 @@ class ImageLogger(Callback):
     @rank_zero_only
     def _wandb(self, pl_module, images, batch_idx, split):
         raise ValueError("No way wandb")
-        grids = dict()
-        for k in images:
-            grid = torchvision.utils.make_grid(images[k])
-            grids[f"{split}/{k}"] = wandb.Image(grid)
-        pl_module.logger.experiment.log(grids)
 
     @rank_zero_only
     def _testtube(self, pl_module, images, batch_idx, split):
